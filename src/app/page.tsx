@@ -1,6 +1,7 @@
 import { copilotApi } from "copilot-node-sdk";
 import Image from "next/image";
 import { need } from "../utils/need";
+import { CreateNotificationButton } from "@/components/createNotification";
 
 type SearchParams = { [key: string]: string | string[] | undefined };
 
@@ -24,6 +25,7 @@ export default async function Page({
         ? searchParams.token
         : undefined,
   });
+
   const data: {
     workspace: Awaited<ReturnType<typeof copilot.retrieveWorkspace>>;
     client?: Awaited<ReturnType<typeof copilot.retrieveClient>>;
@@ -48,6 +50,7 @@ export default async function Page({
       id: tokenPayload.internalUserId,
     });
   }
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
@@ -89,9 +92,7 @@ export default async function Page({
         />
       </div>
 
-      <button>
-        Create notification
-      </button>
+      <CreateNotificationButton />
 
       <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
         <a
