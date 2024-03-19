@@ -13,10 +13,14 @@ export default async function Page({
 }: {
   searchParams: SearchParams;
 }) {
+  const hasValidToken = "token" in searchParams && typeof searchParams.token === "string";
+  if (!hasValidToken) {
+    return <div>Invalid token</div>
+  }
+
   const copilot = copilotApi({
     apiKey: API_KEY,
-    token:
-      "token" in searchParams && typeof searchParams.token === "string"
+    token: hasValidToken && typeof searchParams.token === "string"
         ? searchParams.token
         : undefined,
   });
@@ -32,14 +36,15 @@ export default async function Page({
 
   if (tokenPayload?.clientId) {
     data.client = await copilot.retrieveClient({ id: tokenPayload.clientId });
+    console.log("client", data.client)
   }
   if (tokenPayload?.companyId) {
-    data.client = await copilot.retrieveCompany({
+    data.company = await copilot.retrieveCompany({
       id: tokenPayload.companyId,
     });
   }
   if (tokenPayload?.internalUserId) {
-    data.client = await copilot.retrieveInternalUser({
+    data.internalUser = await copilot.retrieveInternalUser({
       id: tokenPayload.internalUserId,
     });
   }
@@ -83,6 +88,10 @@ export default async function Page({
           priority
         />
       </div>
+
+      <button>
+        Create notification
+      </button>
 
       <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
         <a
