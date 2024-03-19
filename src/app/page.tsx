@@ -4,13 +4,15 @@ import { need } from "../utils/need";
 
 type SearchParams = { [key: string]: string | string[] | undefined };
 
-const API_KEY = need<string>(process.env.COPILOT_API_KEY);
+const apiKey = process.env.COPILOT_API_KEY;
 
-async function getContent(searchParams: SearchParams) {
-  if (!process.env.COPILOT_API_KEY) {
-    throw new Error("Missing COPILOT_API_KEY");
-  }
+const API_KEY = need<string>(apiKey);
 
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
   const copilot = copilotApi({
     apiKey: API_KEY,
     token:
@@ -19,39 +21,28 @@ async function getContent(searchParams: SearchParams) {
         : undefined,
   });
   const data: {
-    workspace: Awaited<ReturnType<typeof copilot.getWorkspaceInfo>>;
-    client?: Awaited<ReturnType<typeof copilot.retrieveAClient>>;
-    company?: Awaited<ReturnType<typeof copilot.retrieveACompany>>;
-    internalUser?: Awaited<ReturnType<typeof copilot.retrieveAnInternalUser>>;
+    workspace: Awaited<ReturnType<typeof copilot.retrieveWorkspace>>;
+    client?: Awaited<ReturnType<typeof copilot.retrieveClient>>;
+    company?: Awaited<ReturnType<typeof copilot.retrieveCompany>>;
+    internalUser?: Awaited<ReturnType<typeof copilot.retrieveInternalUser>>;
   } = {
-    workspace: await copilot.getWorkspaceInfo(),
+    workspace: await copilot.retrieveWorkspace(),
   };
   const tokenPayload = await copilot.getTokenPayload?.();
 
   if (tokenPayload?.clientId) {
-    data.client = await copilot.retrieveAClient({ id: tokenPayload.clientId });
+    data.client = await copilot.retrieveClient({ id: tokenPayload.clientId });
   }
   if (tokenPayload?.companyId) {
-    data.client = await copilot.retrieveACompany({
+    data.client = await copilot.retrieveCompany({
       id: tokenPayload.companyId,
     });
   }
   if (tokenPayload?.internalUserId) {
-    data.client = await copilot.retrieveAnInternalUser({
+    data.client = await copilot.retrieveInternalUser({
       id: tokenPayload.internalUserId,
     });
   }
-
-  // TODO add data.workspace here.
-  return data;
-}
-
-export default async function Page({
-  searchParams,
-}: {
-  searchParams: SearchParams;
-}) {
-  const data = await getContent(searchParams);
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
