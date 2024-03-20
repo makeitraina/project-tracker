@@ -1,8 +1,6 @@
 "use client";
 import { createNotification } from "@/actions/createNotification";
-import { ClientSessionContext } from "@/common/context";
 import { useSearchParams } from "next/navigation";
-import { useContext } from "react";
 
 /**
  * Feature for current user to create a project.
