@@ -6,10 +6,11 @@
     "configurations": [
         {
             "type": "node",
+            "runtimeVersion": "20.11.1",
             "request": "launch",
             "name": "Start App",
             "cwd": "${workspaceRoot}",
-            "runtimeExecutable": "npm",
+            "runtimeExecutable": "yarn",
             "runtimeArgs": ["run", "dev"],
           },
     ]

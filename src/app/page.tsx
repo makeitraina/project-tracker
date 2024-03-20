@@ -1,7 +1,7 @@
 import { copilotApi } from "copilot-node-sdk";
 import Image from "next/image";
 import { need } from "../utils/need";
-import { CreateNotificationButton } from "@/components/createNotification";
+import { CreateProject } from "@/features/CreateProject";
 
 type SearchParams = { [key: string]: string | string[] | undefined };
 
@@ -14,16 +14,16 @@ export default async function Page({
 }: {
   searchParams: SearchParams;
 }) {
-  const hasValidToken = "token" in searchParams && typeof searchParams.token === "string";
-  if (!hasValidToken) {
-    return <div>Invalid token</div>
-  }
+  // const hasValidToken =
+  //   "token" in searchParams && typeof searchParams.token === "string";
+  // if (!hasValidToken) {
+  //   return <div>Invalid token</div>;
+  // }
 
   const copilot = copilotApi({
     apiKey: API_KEY,
-    token: hasValidToken && typeof searchParams.token === "string"
-        ? searchParams.token
-        : undefined,
+    token:
+      typeof searchParams.token === "string" ? searchParams.token : undefined,
   });
 
   const data: {
@@ -38,7 +38,7 @@ export default async function Page({
 
   if (tokenPayload?.clientId) {
     data.client = await copilot.retrieveClient({ id: tokenPayload.clientId });
-    console.log("client", data.client)
+    console.log("client", data.client);
   }
   if (tokenPayload?.companyId) {
     data.company = await copilot.retrieveCompany({
@@ -92,7 +92,12 @@ export default async function Page({
         />
       </div>
 
-      <CreateNotificationButton />
+      {tokenPayload?.clientId && tokenPayload.companyId && (
+        <CreateProject
+          clientId={tokenPayload.clientId}
+          companyId={tokenPayload.companyId}
+        />
+      )}
 
       <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
         <a

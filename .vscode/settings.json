@@ -12,5 +12,11 @@
   },
   "[json]": {
     "editor.defaultFormatter": "vscode.json-language-features"
-  }
+  },
+  "[typescript]": { // for .ts files
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+  },
+  "[typescriptreact]": { // for .tsx files
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+  },
 }
